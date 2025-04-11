@@ -1,0 +1,49 @@
+import calfem
+import numpy as np
+import calfem.core as cfc
+print(calfem.VERSION)
+
+N_elements = 20
+N_nodes = N_elements + 1
+
+A = 10
+k = 5
+Q = 100
+
+Edof = np.zeros((N_elements,2), dtype = int)
+
+
+for i in range(0, N_elements):
+    Edof[i] = [i+1, i+2]
+
+
+K = np.zeros((N_nodes,N_nodes))
+
+############# KKKKKKKKKKKKK
+ep = A*k*N_elements/6
+
+Ke= cfc.spring1e(ep)
+
+cfc.assem(Edof, K, Ke)
+
+############## FFFFFFFFFFFFFF
+
+f_b = np.zeros((N_nodes,1))
+f_b[N_nodes - 1] = -150
+
+f_l = (100*6/N_elements)*np.ones((N_nodes,1))
+f_l[0] = 100*3/N_elements
+f_l[N_nodes-1] = 100*3/N_elements
+
+a,r = cfc.solveq(K, f_l + f_b, np.array([1]), np.array([0]))
+
+print("Displacements a:")
+print(a)
+print("Reaction forces r:")
+print(r)
+
+
+
+
+print("Stiffness matrix K:")
+print(K)
