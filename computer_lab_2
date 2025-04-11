@@ -1,0 +1,37 @@
+import geom2 as geo
+import calfem
+import numpy as np
+import calfem.core as cfc
+import matplotlib.pyplot as plt
+from matplotlib import colormaps
+import calfem.geometry as cfg
+import calfem.mesh as cfm
+import calfem.vis_mpl as cfv
+import calfem.utils as cfu
+import numpy as np
+
+k=1
+t=1
+D = np.eye(2)
+
+coord, edof, dofs, bdofs, bc, bc_value, element_markers = geo.generate_mesh(True) 
+
+ndof = coord.shape[0]
+K = np.zeros((ndof,ndof))
+f = np.zeros((ndof,1))
+
+ex, ey = cfc.coordxtr(edof, coord, dofs)
+
+for eltopo, elx, ely in zip(edof, ex, ey):
+    Ke= cfc.flw2te(elx, ely, [t], D)
+    cfc.assem(eltopo, K, Ke)
+
+
+a,r = cfc.solveq(K,f,bc,bc_value)
+
+cfv.figure()
+cfv.draw_nodal_values(a, coord, edof)
+
+print(max(a))
+
+cfv.show()
