@@ -78,6 +78,13 @@ def generate_mesh(show_geometry: bool):
         cfv.draw_mesh(coord, edof, dofs_per_node = mesh.dofs_per_node, el_type = mesh.el_type)
         plt.show()
     
+    #Boundary conditions (Än så länge inte lagt in något)
+    bc, bc_value = np.array([], 'i'), np.array([], 'f')
+
+    #Return
+    return (coord, edof, dofs, bdofs, bc, bc_value, element_markers)
+    
+
 
 
 
